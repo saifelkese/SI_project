@@ -1,0 +1,28 @@
+package tn.esprit.autoloc.config;
+
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Contact;
+import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.info.License;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class OpenApiConfig {
+
+    @Bean
+    public OpenAPI autoLocOpenAPI() {
+        return new OpenAPI()
+                .info(new Info()
+                        .title("AutoLoc REST API")
+                        .description("Plateforme de gestion de location de véhicules multi-agences - ESPRIT ASI\n" +
+                                     "Exposition des opérations CRUD pour les entités Véhicule, Client, Agence, etc.")
+                        .version("1.0.0")
+                        .contact(new Contact()
+                                .name("Saif Ladhari")
+                                .email("saif.ladheri@esprit.tn"))
+                        .license(new License()
+                                .name("Apache 2.0")
+                                .url("https://springdoc.org")));
+    }
+}
