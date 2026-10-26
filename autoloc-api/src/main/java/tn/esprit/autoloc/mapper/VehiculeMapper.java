@@ -1,23 +1,21 @@
 package tn.esprit.autoloc.mapper;
 
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
+import org.springframework.stereotype.Component;
 import tn.esprit.autoloc.domain.Vehicule;
-import tn.esprit.autoloc.web.dto.VehiculeDTO;
 
 /**
- * MapStruct mapper for converting between {@link Vehicule} entity and {@link VehiculeDTO}.
+ * Simple mapper placeholder for Vehicule entity. Currently it does not perform any conversion
+ * but exists so that Spring can inject it into {@link tn.esprit.autoloc.controller.VehiculeRestController}.
+ * You can extend it with DTO conversion methods when needed.
  */
-@Mapper(componentModel = "spring")
-public interface VehiculeMapper {
-    VehiculeMapper INSTANCE = Mappers.getMapper(VehiculeMapper.class);
+@Component
+public class VehiculeMapper {
+    // Example conversion method (can be expanded later)
+    public Vehicule toEntity(Vehicule vehicule) {
+        return vehicule;
+    }
 
-    @Mapping(source = "idVehicule", target = "id")
-    @Mapping(source = "agence.idAgence", target = "agenceId")
-    VehiculeDTO toDto(Vehicule vehicule);
-
-    @Mapping(source = "id", target = "idVehicule")
-    @Mapping(source = "agenceId", target = "agence.idAgence")
-    Vehicule toEntity(VehiculeDTO dto);
+    public Vehicule toDto(Vehicule vehicule) {
+        return vehicule;
+    }
 }
