@@ -7,26 +7,19 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.autoloc.domain.Vehicule;
-import tn.esprit.autoloc.mapper.VehiculeMapper;
 import tn.esprit.autoloc.service.IVehiculeService;
-import tn.esprit.autoloc.web.dto.VehiculeDTO;
-import jakarta.validation.Valid;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Tag(name = "Véhicule", description = "API de gestion des véhicules (opérations CRUD)")
 @RestController
 @AllArgsConstructor
-@Validated
 @RequestMapping("/vehicule")
 @CrossOrigin("*")
 public class VehiculeRestController {
 
     private final IVehiculeService vehiculeService;
-    private final VehiculeMapper vehiculeMapper;
 
     @Operation(summary = "Récupérer tous les véhicules", description = "Retourne la liste complète de tous les véhicules.")
     @ApiResponses(value = {
@@ -34,11 +27,8 @@ public class VehiculeRestController {
             @ApiResponse(responseCode = "500", description = "Erreur interne du serveur")
     })
     @GetMapping({"", "/retrieve-all-vehicules"})
-    public List<VehiculeDTO> retrieveAllVehicules() {
-        return vehiculeService.retrieveAllVehicules()
-                .stream()
-                .map(vehiculeMapper::toDto)
-                .collect(Collectors.toList());
+    public List<Vehicule> retrieveAllVehicules() {
+        return vehiculeService.retrieveAllVehicules();
     }
 
     @Operation(summary = "Récupérer un véhicule par son ID", description = "Retourne un véhicule spécifique à partir de son identifiant unique.")
@@ -48,11 +38,10 @@ public class VehiculeRestController {
             @ApiResponse(responseCode = "500", description = "Erreur interne du serveur")
     })
     @GetMapping({"/{id}", "/retrieve-vehicule/{id}"})
-    public VehiculeDTO retrieveVehicule(
+    public Vehicule retrieveVehicule(
             @Parameter(description = "Identifiant unique du véhicule", required = true, example = "1")
             @PathVariable("id") Long idVehicule) {
-        Vehicule vehicule = vehiculeService.retrieveVehicule(idVehicule);
-        return vehiculeMapper.toDto(vehicule);
+        return vehiculeService.retrieveVehicule(idVehicule);
     }
 
     @Operation(summary = "Ajouter un nouveau véhicule", description = "Enregistre un nouveau véhicule dans la base de données.")
@@ -63,10 +52,8 @@ public class VehiculeRestController {
     })
     @PostMapping({"", "/add-vehicule"})
     @ResponseStatus(HttpStatus.CREATED)
-    public VehiculeDTO addVehicule(@Valid @RequestBody VehiculeDTO vehiculeDTO) {
-        Vehicule entity = vehiculeMapper.toEntity(vehiculeDTO);
-        Vehicule saved = vehiculeService.addVehicule(entity);
-        return vehiculeMapper.toDto(saved);
+    public Vehicule addVehicule(@RequestBody Vehicule vehicule) {
+        return vehiculeService.addVehicule(vehicule);
     }
 
     @Operation(summary = "Mettre à jour un véhicule", description = "Modifie les informations d'un véhicule existant.")
@@ -77,10 +64,8 @@ public class VehiculeRestController {
             @ApiResponse(responseCode = "500", description = "Erreur interne du serveur")
     })
     @PutMapping({"", "/update-vehicule"})
-    public VehiculeDTO updateVehicule(@Valid @RequestBody VehiculeDTO vehiculeDTO) {
-        Vehicule entity = vehiculeMapper.toEntity(vehiculeDTO);
-        Vehicule updated = vehiculeService.updateVehicule(entity);
-        return vehiculeMapper.toDto(updated);
+    public Vehicule updateVehicule(@RequestBody Vehicule vehicule) {
+        return vehiculeService.updateVehicule(vehicule);
     }
 
     @Operation(summary = "Supprimer un véhicule", description = "Supprime un véhicule existant par son identifiant unique.")
