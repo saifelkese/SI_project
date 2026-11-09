@@ -1,0 +1,17 @@
+package tn.esprit.autoloc.mapper;
+
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import tn.esprit.autoloc.domain.Equipement;
+import tn.esprit.autoloc.web.dto.EquipementDTO;
+
+@Mapper(componentModel = "spring")
+public interface EquipementMapper {
+
+    @Mapping(source = "idEquipement", target = "id")
+    EquipementDTO toDto(Equipement equipement);
+
+    @Mapping(source = "id", target = "idEquipement")
+    @Mapping(target = "vehicules", ignore = true)
+    Equipement toEntity(EquipementDTO dto);
+}

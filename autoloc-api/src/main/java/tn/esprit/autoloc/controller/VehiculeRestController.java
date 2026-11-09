@@ -5,11 +5,13 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import tn.esprit.autoloc.domain.Vehicule;
 import tn.esprit.autoloc.service.IVehiculeService;
+import tn.esprit.autoloc.web.dto.VehiculeDTO;
+
 import java.util.List;
 
 @Tag(name = "Véhicule", description = "API de gestion des véhicules (opérations CRUD)")
@@ -27,7 +29,7 @@ public class VehiculeRestController {
             @ApiResponse(responseCode = "500", description = "Erreur interne du serveur")
     })
     @GetMapping({"", "/retrieve-all-vehicules"})
-    public List<Vehicule> retrieveAllVehicules() {
+    public List<VehiculeDTO> retrieveAllVehicules() {
         return vehiculeService.retrieveAllVehicules();
     }
 
@@ -38,7 +40,7 @@ public class VehiculeRestController {
             @ApiResponse(responseCode = "500", description = "Erreur interne du serveur")
     })
     @GetMapping({"/{id}", "/retrieve-vehicule/{id}"})
-    public Vehicule retrieveVehicule(
+    public VehiculeDTO retrieveVehicule(
             @Parameter(description = "Identifiant unique du véhicule", required = true, example = "1")
             @PathVariable("id") Long idVehicule) {
         return vehiculeService.retrieveVehicule(idVehicule);
@@ -52,8 +54,8 @@ public class VehiculeRestController {
     })
     @PostMapping({"", "/add-vehicule"})
     @ResponseStatus(HttpStatus.CREATED)
-    public Vehicule addVehicule(@RequestBody Vehicule vehicule) {
-        return vehiculeService.addVehicule(vehicule);
+    public VehiculeDTO addVehicule(@Valid @RequestBody VehiculeDTO vehiculeDTO) {
+        return vehiculeService.addVehicule(vehiculeDTO);
     }
 
     @Operation(summary = "Mettre à jour un véhicule", description = "Modifie les informations d'un véhicule existant.")
@@ -64,8 +66,8 @@ public class VehiculeRestController {
             @ApiResponse(responseCode = "500", description = "Erreur interne du serveur")
     })
     @PutMapping({"", "/update-vehicule"})
-    public Vehicule updateVehicule(@RequestBody Vehicule vehicule) {
-        return vehiculeService.updateVehicule(vehicule);
+    public VehiculeDTO updateVehicule(@Valid @RequestBody VehiculeDTO vehiculeDTO) {
+        return vehiculeService.updateVehicule(vehiculeDTO);
     }
 
     @Operation(summary = "Supprimer un véhicule", description = "Supprime un véhicule existant par son identifiant unique.")

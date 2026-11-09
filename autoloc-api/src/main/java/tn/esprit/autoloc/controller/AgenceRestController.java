@@ -5,11 +5,12 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import tn.esprit.autoloc.domain.Agence;
 import tn.esprit.autoloc.service.IAgenceService;
+import tn.esprit.autoloc.web.dto.AgenceDTO;
 
 import java.util.List;
 
@@ -28,7 +29,7 @@ public class AgenceRestController {
             @ApiResponse(responseCode = "500", description = "Erreur interne du serveur")
     })
     @GetMapping({"", "/retrieve-all-agences"})
-    public List<Agence> retrieveAllAgences() {
+    public List<AgenceDTO> retrieveAllAgences() {
         return agenceService.retrieveAllAgences();
     }
 
@@ -39,7 +40,7 @@ public class AgenceRestController {
             @ApiResponse(responseCode = "500", description = "Erreur interne du serveur")
     })
     @GetMapping({"/{id}", "/retrieve-agence/{id}"})
-    public Agence retrieveAgence(
+    public AgenceDTO retrieveAgence(
             @Parameter(description = "Identifiant unique de l'agence", required = true, example = "1")
             @PathVariable("id") Long idAgence) {
         return agenceService.retrieveAgence(idAgence);
@@ -53,8 +54,8 @@ public class AgenceRestController {
     })
     @PostMapping({"", "/add-agence"})
     @ResponseStatus(HttpStatus.CREATED)
-    public Agence addAgence(@RequestBody Agence agence) {
-        return agenceService.addAgence(agence);
+    public AgenceDTO addAgence(@Valid @RequestBody AgenceDTO agenceDTO) {
+        return agenceService.addAgence(agenceDTO);
     }
 
     @Operation(summary = "Mettre à jour une agence", description = "Modifie les informations d'une agence existante.")
@@ -65,8 +66,8 @@ public class AgenceRestController {
             @ApiResponse(responseCode = "500", description = "Erreur interne du serveur")
     })
     @PutMapping({"", "/update-agence"})
-    public Agence updateAgence(@RequestBody Agence agence) {
-        return agenceService.updateAgence(agence);
+    public AgenceDTO updateAgence(@Valid @RequestBody AgenceDTO agenceDTO) {
+        return agenceService.updateAgence(agenceDTO);
     }
 
     @Operation(summary = "Supprimer une agence", description = "Supprime une agence de location via son identifiant unique.")

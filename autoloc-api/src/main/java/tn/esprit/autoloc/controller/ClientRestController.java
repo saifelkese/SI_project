@@ -5,11 +5,12 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import tn.esprit.autoloc.domain.Client;
 import tn.esprit.autoloc.service.IClientService;
+import tn.esprit.autoloc.web.dto.ClientDTO;
 
 import java.util.List;
 
@@ -28,7 +29,7 @@ public class ClientRestController {
             @ApiResponse(responseCode = "500", description = "Erreur interne du serveur")
     })
     @GetMapping({"", "/retrieve-all-clients"})
-    public List<Client> retrieveAllClients() {
+    public List<ClientDTO> retrieveAllClients() {
         return clientService.retrieveAllClients();
     }
 
@@ -39,7 +40,7 @@ public class ClientRestController {
             @ApiResponse(responseCode = "500", description = "Erreur interne du serveur")
     })
     @GetMapping({"/{id}", "/retrieve-client/{id}"})
-    public Client retrieveClient(
+    public ClientDTO retrieveClient(
             @Parameter(description = "Identifiant unique du client", required = true, example = "1")
             @PathVariable("id") Long idClient) {
         return clientService.retrieveClient(idClient);
@@ -53,8 +54,8 @@ public class ClientRestController {
     })
     @PostMapping({"", "/add-client"})
     @ResponseStatus(HttpStatus.CREATED)
-    public Client addClient(@RequestBody Client client) {
-        return clientService.addClient(client);
+    public ClientDTO addClient(@Valid @RequestBody ClientDTO clientDTO) {
+        return clientService.addClient(clientDTO);
     }
 
     @Operation(summary = "Mettre à jour un client", description = "Modifie les informations d'un client existant.")
@@ -65,8 +66,8 @@ public class ClientRestController {
             @ApiResponse(responseCode = "500", description = "Erreur interne du serveur")
     })
     @PutMapping({"", "/update-client"})
-    public Client updateClient(@RequestBody Client client) {
-        return clientService.updateClient(client);
+    public ClientDTO updateClient(@Valid @RequestBody ClientDTO clientDTO) {
+        return clientService.updateClient(clientDTO);
     }
 
     @Operation(summary = "Supprimer un client", description = "Supprime un client de la base de données via son identifiant.")

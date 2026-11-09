@@ -2,39 +2,51 @@ package tn.esprit.autoloc.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import tn.esprit.autoloc.domain.Equipement;
+import tn.esprit.autoloc.exception.ResourceNotFoundException;
+import tn.esprit.autoloc.mapper.EquipementMapper;
 import tn.esprit.autoloc.repository.EquipementRepository;
+import tn.esprit.autoloc.web.dto.EquipementDTO;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
 public class EquipementServiceImpl implements IEquipementService {
 
     private final EquipementRepository equipementRepository;
+    private final EquipementMapper equipementMapper;
 
     @Override
-    public List<Equipement> retrieveAllEquipements() {
-        return equipementRepository.findAll();
+    public List<EquipementDTO> retrieveAllEquipements() {
+        return equipementRepository.findAll()
+                .stream()
+                .map(equipementMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Equipement addEquipement(Equipement equipement) {
-        return equipementRepository.save(equipement);
+    public EquipementDTO addEquipement(EquipementDTO equipementDTO) {
+        return equipementMapper.toDto(equipementRepository.save(equipementMapper.toEntity(equipementDTO)));
     }
 
     @Override
-    public Equipement updateEquipement(Equipement equipement) {
-        return equipementRepository.save(equipement);
+    public EquipementDTO updateEquipement(EquipementDTO equipementDTO) {
+        return equipementMapper.toDto(equipementRepository.save(equipementMapper.toEntity(equipementDTO)));
     }
 
     @Override
-    public Equipement retrieveEquipement(Long idEquipement) {
-        return equipementRepository.findById(idEquipement).orElse(null);
+    public EquipementDTO retrieveEquipement(Long idEquipement) {
+        return equipementRepository.findById(idEquipement)
+                .map(equipementMapper::toDto)
+                .orElseThrow(() -> new ResourceNotFoundException("Équipement introuvable avec l'id : " + idEquipement));
     }
 
     @Override
     public void removeEquipement(Long idEquipement) {
+        if (!equipementRepository.existsById(idEquipement)) {
+            throw new ResourceNotFoundException("Équipement introuvable avec l'id : " + idEquipement);
+        }
         equipementRepository.deleteById(idEquipement);
     }
 }
